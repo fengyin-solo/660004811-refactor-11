@@ -14,10 +14,9 @@
     <div class="filters" v-if="store.result">
       <el-radio-group v-model="activeCluster" @change="onCluster">
         <el-radio-button label="all">全部</el-radio-button>
-        <el-radio-button label="alpha-helix">α-螺旋</el-radio-button>
-        <el-radio-button label="beta-sheet">β-折叠</el-radio-button>
-        <el-radio-button label="left-helix">左手螺旋</el-radio-button>
-        <el-radio-button label="disallowed">禁阻区</el-radio-button>
+        <el-radio-button v-for="region in regions" :key="region.key" :label="region.key">
+          {{ region.label }}
+        </el-radio-button>
       </el-radio-group>
     </div>
   </div>
@@ -26,10 +25,12 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue"
 import { useProteinStore } from "../store/protein"
+import { REGION_DEFINITIONS } from "@/constants/ramachandran"
 const emit = defineEmits<{ sample: [params: { residues: number; conformations: number }] }>()
 const store = useProteinStore()
 const form = reactive({ residues: 10, conformations: 1000 })
 const activeCluster = ref("all")
+const regions = REGION_DEFINITIONS
 function emitSample() { emit("sample", { ...form }) }
 function onCluster(val: string) { store.filterByCluster(val) }
 </script>
